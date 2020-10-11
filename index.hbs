@@ -1,0 +1,87 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TODO app</title>
+    <link rel="stylesheet" href="./style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Staatliches&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="main">
+
+        <div class="title">TODO<span>list</span></div>
+        <form method="POST" action="/api/add">
+            <input class="addInput" type="text" name="todo" required placeholder="Add new todo">
+            <input class="button" type="submit" value="ADD">
+        </form>
+        <div class="todos">
+            {{#each todos}}
+            <div class="todo" id={{this.id}}>
+                {{#if this.isEditing}}
+                <div class="editing">
+                    <form method="POST" action="/api/change">
+                        <input type="text" placeholder="todo" class="editInput" name="todo" required
+                            value={{this.value}}>
+                        <input type="hidden" name="id" value={{this.id}}>
+                        <input type="submit" value="Save" class="button save">
+                    </form>
+                </div>
+                {{else}}
+                <p title="Click to check" onclick="check('{{this.id}}')" class="text{{#if this.done}} done{{/if}}">
+                    {{this.value}}
+                </p>
+                <div class="actionButtons">
+
+                    <button onclick="edit('{{this.id}}')" class="edit button">
+                        Edit
+                    </button>
+                    <button onclick="deleteTodo('{{this.id}}')" class="delete button">
+                        Delete
+                    </button>
+                </div>
+                {{/if}}
+            </div>
+            {{/each}}
+        </div>
+    </div>
+    <script>
+        const edit = (id) => {
+            fetch("/api/edit", {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id })
+            });
+            location = location;
+        };
+        const deleteTodo = (id) => {
+            fetch("/api/delete", {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id })
+            });
+            location = location;
+        };
+
+        const check = (id) => {
+            fetch("/api/check", {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id })
+            });
+            location = location;
+        };
+    </script>
+</body>
+
+</html>
